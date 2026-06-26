@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel card">
+  <h1>{% if project %}Modifier le projet{% else %}Nouveau projet{% endif %}</h1>
+  <form method="post">
+    <label for="title">Nom du projet</label>
+    <input id="title" name="title" required value="{{ project.title if project else '' }}">
+
+    <label for="description">Description</label>
+    <textarea id="description" name="description" rows="5" required>{{ project.description if project else '' }}</textarea>
+
+    <div class="form-row">
+      <div>
+        <label for="due_date">Date de livraison</label>
+        <input id="due_date" name="due_date" type="date" value="{{ project.due_date if project else '' }}" required>
+      </div>
+      <div>
+        <label for="priority">Priorité</label>
+        <select id="priority" name="priority" class="select-rich">
+          {% for p in priorities %}
+          <option value="{{ p }}" {% if project and project.priority == p %}selected{% endif %}>{{ priority_label(p) }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    {% if project %}
+    <label for="status">Statut</label>
+    <select id="status" name="status">
+      {% for key, label in statuses.items() %}
+      <option value="{{ key }}" {% if project.status == key %}selected{% endif %}>{{ label }}</option>
+      {% endfor %}
+    </select>
+    {% endif %}
+
+    <button class="primary" type="submit">Enregistrer</button>
+  </form>
+</div>
+{% endblock %}

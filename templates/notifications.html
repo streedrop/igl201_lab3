@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="toolbar">
+  <h1>Notifications</h1>
+</div>
+{% if notifications %}
+<ul class="list">
+  {% for note in notifications %}
+  <li class="notification-item {% if not note.read %}unread{% endif %}">
+    <span>{{ note.created_at[:10] }} - {{ note.message }}</span>
+    {% if not note.read %}
+    <form method="post" action="{{ url_for('notification_read', notification_id=note.id) }}" class="inline-form">
+      <button class="secondary" type="submit">Marquer lue</button>
+    </form>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Vous n’avez pas de notifications récentes.</p>
+{% endif %}
+{% endblock %}

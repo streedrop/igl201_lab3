@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="project-header">
+  <div>
+    <div class="project-title-row">
+      <h1>{{ project.title }}</h1>
+      <span class="badge badge-{{ project.priority }}">{{ priority_label(project.priority) }}</span>
+    </div>
+    <p>{{ project.description }}</p>
+  </div>
+  <div class="project-actions">
+    <a class="secondary" href="{{ url_for('project_edit', project_id=project.id) }}">Modifier</a>
+    <form method="post" action="{{ url_for('project_archive', project_id=project.id) }}" class="inline-form">
+      <button class="ghost" type="submit">Archiver</button>
+    </form>
+  </div>
+</div>
+<div class="grid-dashboard">
+  <section class="card">
+    <h2>Informations</h2>
+    <p>Status : {{ project_status_label(project.status) }}</p>
+    <p>Priorité : {{ priority_label(project.priority) }}</p>
+    <p>Date de livraison : {{ project.due_date }}</p>
+    <p>Responsable : {{ store.get_user(project.owner_id).name if store.get_user(project.owner_id) else '—' }}</p>
+  </section>
+  <section class="card">
+    <h2>Membres</h2>
+    <ul>
+      {% for member in members %}
+      <li>{{ member.name }} • {{ member.email }}</li>
+      {% endfor %}
+    </ul>
+    <form method="post" action="{{ url_for('project_members', project_id=project.id) }}">
+      <select name="member_id">
+        {% for user in available_users %}
+          {% if user.id not in project.members %}
+          <option value="{{ user.id }}">{{ user.name }} ({{ user.email }})</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+      <button name="action" value="add">Ajouter</button>
+    </form>
+  </section>
+</div>
+<section class="card">
+  <div class="toolbar">
+    <h2>Tâches</h2>
+    <a class="secondary" href="{{ url_for('task_new', project_id=project.id) }}">Nouvelle tâche</a>
+  </div>
+  {% if project_tasks %}
+  <table class="table">
+    <thead>
+      <tr><th>Titre</th><th>Statut</th><th>Priorité</th><th>Responsable</th><th>Échéance</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for task in project_tasks %}
+      <tr>
+        <td><a href="{{ url_for('task_edit', task_id=task.id) }}">{{ task.title }}</a></td>
+        <td>{{ task_status_label(task.status) }}</td>
+        <td>{{ priority_label(task.priority) }}</td>
+        <td>{{ store.get_user(task.assignee_id).name if task.assignee_id and store.get_user(task.assignee_id) else 'Non assignée' }}</td>
+        <td>{{ task.due_date or '—' }}</td>
+        <td><a href="{{ url_for('task_edit', task_id=task.id) }}">Modifier</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Aucune tâche pour le moment.</p>
+  {% endif %}
+</section>
+<section class="card">
+  <div class="toolbar">
+    <h2>User stories</h2>
+    <a class="secondary" href="{{ url_for('story_new') }}">Nouvelle user story</a>
+  </div>
+  {% if project_stories %}
+  <ul class="list">
+    {% for story in project_stories %}
+    <li>{{ story.title }} — {{ story.status }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Aucune user story.</p>
+  {% endif %}
+</section>
+<section class="card">
+  <h2>Historique</h2>
+  {% if history %}
+  <ul class="list">
+    {% for item in history %}
+    <li>{{ item.created_at }} • {{ item.action }} • {{ item.details }}</li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Aucun historique disponible.</p>
+  {% endif %}
+</section>
+{% endblock %}

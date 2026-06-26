@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel card">
+  <h1>Historique</h1>
+  {% if history %}
+  <ul class="list">
+    {% for item in history %}
+    <li>
+      <strong>{{ item.action }}</strong> • {{ item.created_at }} • {{ item.details }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p>Aucun historique disponible.</p>
+  {% endif %}
+</div>
+{% endblock %}

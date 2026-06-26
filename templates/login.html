@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel card auth-panel">
+  <h1>Connexion</h1>
+  <form method="post">
+    <label for="email">Courriel</label>
+    <input type="email" name="email" id="email" required>
+    <label for="password">Mot de passe</label>
+    <input type="password" name="password" id="password" required>
+    <button type="submit" class="primary">Se connecter</button>
+  </form>
+  <p>Compte initial: admin@pixelco.test / admin</p>
+</div>
+{% endblock %}

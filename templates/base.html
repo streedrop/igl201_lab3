@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pixel & Co. Project Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container">
+        <a class="brand" href="{{ url_for('dashboard') }}">Pixel & Co.</a>
+        {% if current_user %}
+        <nav class="nav-links">
+          <a class="nav-link {% if request.path == '/dashboard' %}active{% endif %}" href="{{ url_for('dashboard') }}">Tableau de bord</a>
+          <a class="nav-link {% if request.path.startswith('/projects') %}active{% endif %}" href="{{ url_for('projects') }}">Projets</a>
+          <a class="nav-link {% if request.path == '/notifications' %}active{% endif %}" href="{{ url_for('notifications') }}">Notifications</a>
+          {% if ROLE_ADMIN in current_user.roles %}
+            <a class="nav-link {% if request.path == '/users' %}active{% endif %}" href="{{ url_for('users') }}">Utilisateurs</a>
+          {% endif %}
+          <a class="nav-link" href="{{ url_for('logout') }}">Déconnexion</a>
+        </nav>
+        {% endif %}
+      </div>
+    </header>
+    <main class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alerts">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category or 'default' }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="footer">
+      <div class="container">© 2026 Pixel & Co. — Application de gestion de projets pour usage interne et de démonstration.</div>
+    </footer>
+  </body>
+</html>

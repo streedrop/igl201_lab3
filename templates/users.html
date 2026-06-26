@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="toolbar">
+  <h1>Utilisateurs</h1>
+  <a class="secondary" href="{{ url_for('user_new') }}">Ajouter un utilisateur</a>
+</div>
+<table class="table">
+  <thead>
+    <tr><th>Nom</th><th>Courriel</th><th>Rôles</th><th>Statut</th></tr>
+  </thead>
+  <tbody>
+    {% for user_item in users %}
+    <tr>
+      <td>{{ user_item.name }}</td>
+      <td>{{ user_item.email }}</td>
+      <td>{{ ', '.join(user_item.roles) }}</td>
+      <td>{{ 'Actif' if user_item.active else 'Désactivé' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

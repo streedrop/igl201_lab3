@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="grid-dashboard">
+  <section class="card summary-card">
+    <h2>Bonjour, {{ user.name }}</h2>
+    <p>Rôle: {{ ', '.join(user.roles) }}</p>
+    <p>Tâches assignées: {{ tasks|length }}</p>
+    <p>Projets actifs: {{ projects|length }}</p>
+  </section>
+
+  <section class="card">
+    <h3>Tâches urgentes</h3>
+    {% if urgent %}
+      <ul class="list">
+      {% for task in urgent %}
+        <li><a href="{{ url_for('task_edit', task_id=task.id) }}">{{ task.title }}</a> • {{ priority_label(task.priority) }}</li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucune tâche urgente.</p>
+    {% endif %}
+  </section>
+
+  <section class="card">
+    <h3>Tâches en retard</h3>
+    {% if overdue %}
+      <ul class="list">
+      {% for task in overdue %}
+        <li><a href="{{ url_for('task_edit', task_id=task.id) }}">{{ task.title }}</a> • {{ task.due_date }}</li>
+      {% endfor %}
+      </ul>
+    {% else %}
+      <p>Aucune tâche en retard.</p>
+    {% endif %}
+  </section>
+
+  <section class="card full-width">
+    <h3>Projets</h3>
+    {% if projects %}
+      <div class="cards-list">
+        {% for project in projects %}
+        <article class="small-card">
+          <h4><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a></h4>
+          <p>{{ project.description[:120] }}{% if project.description|length > 120 %}...{% endif %}</p>
+          <p>Status: {{ project_status_label(project.status) }}</p>
+          <p>Echéance: {{ project.due_date }}</p>
+        </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p>Pas encore de projets actifs.</p>
+    {% endif %}
+    <a class="secondary" href="{{ url_for('project_new') }}">Créer un projet</a>
+  </section>
+</div>
+{% endblock %}

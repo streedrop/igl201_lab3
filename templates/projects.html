@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="toolbar">
+  <div>
+    <h1>Projets</h1>
+    <p class="section-description">Recherchez et filtrez vos projets actifs.</p>
+  </div>
+  <a class="primary" href="{{ url_for('project_new') }}">Nouveau projet</a>
+</div>
+<form class="filters" method="get">
+  <input type="search" name="q" value="{{ query }}" placeholder="Rechercher un projet">
+  <select name="status">
+    <option value="">Tous statuts</option>
+    {% for key, label in STATUS_LABELS.items() %}
+      <option value="{{ key }}" {% if status == key %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <select name="priority">
+    <option value="">Toutes priorités</option>
+    {% for key, label in PRIORITY_LABELS.items() %}
+      <option value="{{ key }}" {% if priority == key %}selected{% endif %}>{{ label }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="primary">Filtrer</button>
+</form>
+<div class="cards-list">
+  {% for project in projects %}
+  <article class="card project-card">
+    <div class="project-card-header">
+      <h2><a href="{{ url_for('project_detail', project_id=project.id) }}">{{ project.title }}</a></h2>
+      <span class="badge badge-{{ project.priority }}">{{ priority_label(project.priority) }}</span>
+    </div>
+    <p>{{ project.description[:160] }}{% if project.description|length > 160 %}...{% endif %}</p>
+    <div class="project-meta">
+      <span>{{ project_status_label(project.status) }}</span>
+      <span>{{ project.due_date }}</span>
+    </div>
+  </article>
+  {% else %}
+  <p>Aucun projet trouvé.</p>
+  {% endfor %}
+</div>
+{% endblock %}

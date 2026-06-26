@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="panel card">
+  <h1>{% if edit %}Modifier l'utilisateur{% else %}Nouvel utilisateur{% endif %}</h1>
+  <form method="post">
+    <label for="name">Nom</label>
+    <input id="name" name="name" required value="{{ user.name if edit else '' }}">
+
+    <label for="email">Courriel</label>
+    <input id="email" name="email" type="email" required value="{{ user.email if edit else '' }}">
+
+    <label for="password">Mot de passe</label>
+    <input id="password" name="password" type="password" {% if not edit %}required{% endif %}>
+
+    <fieldset>
+      <legend>Rôles</legend>
+      {% set selected_roles = user.roles if edit else [] %}
+      <div class="role-options">
+        <label class="role-pill{% if 'admin' in selected_roles %} selected{% endif %}">
+          <input type="checkbox" name="roles" value="admin"{% if 'admin' in selected_roles %} checked{% endif %}>
+          <span>Administrateur</span>
+        </label>
+        <label class="role-pill{% if 'project_manager' in selected_roles %} selected{% endif %}">
+          <input type="checkbox" name="roles" value="project_manager"{% if 'project_manager' in selected_roles %} checked{% endif %}>
+          <span>Chef de projet</span>
+        </label>
+        <label class="role-pill{% if 'developer' in selected_roles %} selected{% endif %}">
+          <input type="checkbox" name="roles" value="developer"{% if 'developer' in selected_roles %} checked{% endif %}>
+          <span>Développeur</span>
+        </label>
+        <label class="role-pill{% if 'member' in selected_roles %} selected{% endif %}">
+          <input type="checkbox" name="roles" value="member"{% if 'member' in selected_roles %} checked{% endif %}>
+          <span>Membre de l’équipe</span>
+        </label>
+      </div>
+    </fieldset>
+
+    <button class="primary" type="submit">Enregistrer</button>
+  </form>
+</div>
+{% endblock %}
